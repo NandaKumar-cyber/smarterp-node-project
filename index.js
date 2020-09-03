@@ -3,8 +3,12 @@ const app = express();
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb+srv://nandha420:nandha420@cluster0.7cuxg.mongodb.net/nandha420?retryWrites=true&w=majority"
-);
+mongoose.connect("mongodb+srv://nandha420:nandha420@cluster0.7cuxg.mongodb.net/nandha420?retryWrites=true&w=majority",
+{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+(err) => {
+  if (err) throw err;
+  console.log("Database is Connected Successfully");
+});
 
 const { UrlModel } = require('./models/urlshort');
 // Midleware
@@ -34,15 +38,9 @@ app.post('/create', function (req, res) {
 
 
 app.get('/:urlId', function (req, res) {
-    UrlModel.findOne({ shortUrl: req.params.urlId }, function (err, data) {
+    UrlModel.findOne({shortUrl: req.params.urlId }, function (err, data) {
         if (err) throw err;
-
-        UrlModel.findByIdAndUpdate({ _id:data.id }, { $inc: { clickCount: 1 } }, function (err, updatedData) {
-            if (err) throw err;
-            res.redirect(data.longUrl)
-        })
-
-
+         res.redirect(data.longUrl)
     })
 })
 
@@ -53,8 +51,8 @@ app.get('/delete/:id',function(req,res){
     })
 })
 
-app.listen(3000, function () {
-    console.log('Port is running in 3000')
+app.listen(4000, function () {
+    console.log('Port is running in 4000')
 });
 
 function generateUrl() {
